@@ -1,4 +1,5 @@
 import 'package:expense_manager/models/ExpenseDB.dart';
+import 'package:expense_manager/widgets/ExpenseListItem.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,12 +13,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ExpenseDB _db = ExpenseDB();
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  _HomePageState() {
+    _db.updateDB().then((value) => setState(() {}));
   }
 
   @override
@@ -26,12 +24,16 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      // body: ListView.separated(
-      //     itemBuilder: itemBuilder,
-      //     separatorBuilder: (context, index) => Divider(thickness: 10,),
-      //     itemCount: itemCount)
+      body: ListView.separated(
+          itemBuilder: (aContext, aIndex) {
+            var element = _db.get(aIndex);
+            return ExpenseListItem(index: aIndex, data: element);
+          },
+          separatorBuilder: (context, index) => Divider(
+                thickness: 1,
+              ),
+          itemCount: _db.count),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),

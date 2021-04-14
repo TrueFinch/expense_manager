@@ -16,7 +16,7 @@ class ExpenseModel {
 
   Map<String, dynamic> toMapWithoutID() {
     return {
-      "dateTime": _dateTime,
+      "dateTime": _dateTime.toString(),
       "desc": _desc,
       "name": _name,
       "tag": _tag,
@@ -26,35 +26,37 @@ class ExpenseModel {
   }
 
   factory ExpenseModel.fromMap(Map<String, dynamic> aData) {
-    return new ExpenseModel(aData["id"], aData["dateTime"], aData["desc"],
-        aData["name"], aData["tag"], aData["owner"], aData["cost"]);
+    return new ExpenseModel(
+        aData["id"],
+        aData["cost"],
+        aData["desc"],
+        aData["name"],
+        aData["tag"],
+        aData["owner"],
+        DateTime.parse(aData["dateTime"]));
   }
 
   int get id => _id;
 
-  int get cost => _cost;
+  double get cost => _cost;
 
   String get name => _name;
 
   String get desc => _desc;
 
-  //todo change type to int
-  String get tag => _tag;
+  int get tag => _tag;
 
-  //todo change type to int
-  String get owner => _owner;
+  int get owner => _owner;
 
   DateTime get dateTime => _dateTime;
 
   int _id;
-  int _cost;
+  double _cost;
   String _name;
   String _desc;
 
-  //todo change type to int
-  String _tag;
+  int _tag;
 
-  //todo change type to int
-  String _owner;
+  int _owner;
   DateTime _dateTime;
 }

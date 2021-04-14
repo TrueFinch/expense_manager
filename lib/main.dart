@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'models/ExpenseDB.dart';
 import 'pages/HomePage.dart';
 
 void main() {
+  // ExpenseDB(); // init expenseDB before start application
   runApp(ExpenseManagerApp());
 }
 
