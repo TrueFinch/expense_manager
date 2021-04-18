@@ -4,14 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ExpenseListItem extends StatefulWidget {
+class ExpenseListItem extends StatelessWidget {
   ExpenseListItem({this.index, this.data});
 
-  final ExpenseDB _db = ExpenseDB();
   final int index;
   final ExpenseModel data;
+  final ExpenseDB _db = ExpenseDB();
+  final TextStyle _nameStyle = TextStyle(fontSize: 20);
   final TextStyle _dateStyle = TextStyle(
-    fontSize: 18,
+    fontSize: 14,
   );
   final TextStyle _costStyle = TextStyle(
     fontSize: 20,
@@ -20,69 +21,52 @@ class ExpenseListItem extends StatefulWidget {
   );
 
   @override
-  _ExpenseListItemState createState() => _ExpenseListItemState(data);
-}
-
-class _ExpenseListItemState extends State<ExpenseListItem> {
-  _ExpenseListItemState(ExpenseModel aData) {
-    ExpenseDB().getTagByID(aData.tag).then((aValue) => setState(() {
-          _tagText = aValue;
-        }));
-    ExpenseDB().getOwnerByID(aData.owner).then((aValue) => setState(() {
-          _ownerText = aValue;
-        }));
-  }
-
-  // @formatter:on
-  @override
   Widget build(BuildContext aContext) {
     var content = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              DateFormat("dd-MM-yyyy — HH:mm").format(widget.data.dateTime),
-              style: widget._dateStyle,
-            ),
-            // if (_ownerText != "no_name")
-            Row(
-              children: [
-                Icon(Icons.account_box),
-                Text(_ownerText),
-              ],
-            ),
-            if (_tagText.isNotEmpty) Text(_tagText),
-          ],
-        ),
         Expanded(
+            flex: 3,
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              widget.data.cost.toString(),
-              style: widget._costStyle,
-            ),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [Text(widget.data.name), Text(widget.data.desc)])
-          ],
-        ))
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data.name,
+                  style: _nameStyle,
+                ),
+                Text(
+                  DateFormat("dd-MM-yyyy — HH:mm").format(data.dateTime),
+                  style: _dateStyle,
+                )
+              ],
+            )),
+        // if (data.owner != 0 || data.tag != 0) Expanded(child: Column()),
+        Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  data.cost.toString(),
+                  style: _costStyle,
+                )
+              ],
+            )),
       ],
     );
     return Dismissible(
-        key: Key("${widget.data.id}"),
+      key: Key("${data.id}"),
+      onDismissed: (direction) {
+      },
+      child: GestureDetector(
+        onLongPress: () {
+          int a = 0;
+        },
         child: Card(
           child: Padding(
               padding: EdgeInsets.fromLTRB(10, 5, 10, 5), child: content),
-        ));
+        ),
+      ),
+    );
   }
-
-  // @formatter:on
-
-  ExpenseModel data;
-  String _tagText = "";
-  String _ownerText = "";
 }
