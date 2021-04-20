@@ -5,7 +5,7 @@ class ExpenseModel {
   Map<String, dynamic> toMapFull() {
     return {
       "id": _id,
-      "dateTime": _dateTime,
+      "dateTime": _dateTime.toString(),
       "desc": _desc,
       "name": _name,
       "tag": _tag,

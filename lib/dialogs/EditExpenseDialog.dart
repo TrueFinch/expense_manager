@@ -2,6 +2,8 @@ import 'package:expense_manager/models/ExpenseDB.dart';
 import 'package:expense_manager/models/ExpenseModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:tuple/tuple.dart';
 
 class EditExpenseDialogState extends State<EditExpenseDialog> {
   EditExpenseDialog({aExpenseID = -1}) {
@@ -22,17 +24,18 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    var data = ExpenseDB().getExpenseByID(widget._expenseID);
+  Widget build(BuildContext aContext) {
+    var currentDateTime =
+    _data["id"] == -1 ? DateTime.now() : DateTime.parse(_data["dateTime"]);
     return Scaffold(
       appBar: AppBar(title: Text("Edit expense")),
       body: Form(
           key: _formState,
           child: Column(
             children: [
-              Text("Name", style: _nameStyle),
+              Text("Name", style: _descStyle),
               TextFormField(
-                style: _nameEditStyle,
+                style: _editStyle,
                 autovalidateMode: AutovalidateMode.always,
                 validator: (aValue) {
                   if (aValue.length < 3) {
@@ -46,40 +49,60 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
               ),
               Text("Description", style: _descStyle),
               TextFormField(
-                style: _descEditStyle,
+                style: _editStyle,
                 keyboardType: TextInputType.multiline,
                 maxLines: 3,
                 onSaved: (aValue) {
                   _data["desc"] = aValue;
                 },
               ),
-              Text("Cost", style: _costStyle),
+              Text("Cost", style: _descStyle),
               TextFormField(
-                style: _costEditStyle,
+                style: _editStyle,
                 onSaved: (aValue) {
                   _data["cost"] = aValue;
                 },
-              )
+              ),
+              Text("Date and time", style: _descStyle),
+              TextButton(
+                  onPressed: () {
+                    DatePicker.showDatePicker(aContext,
+                        showTitleActions: true,
+                        minTime: DateTime(2000),
+                        onConfirm: (DateTime aValue) {
+                          _data["dateTime"] = aValue.toString();
+                        },
+                        currentTime: currentDateTime,
+                        locale: LocaleType.ru);
+                  },
+                  child: Text(_data["dateTime"], style: _editStyle)),
+              Text("Tag", style: _descStyle),
+              // _buildDropDown(aContext, Icon(Icons.tag), aItems, "Tag")
             ],
           )),
     );
   }
 
-  // Widget _buildDropDown(Icon aIcon, List<String> aItems) {
-  //   return DropdownButton<String>(
-  //       items: aItems.map((String aElement) => DropdownMenuItem(child: Text()))
-  //   );
-  // }
+  Widget _buildDropDown(BuildContext aContext, Icon aIcon,
+      List<Tuple2<int, String>> aItems, String aID) {
+    return DropdownButton<Tuple2<int, String>>(
+      icon: aIcon,
+      onChanged: (Tuple2<int, String> aItem) {
+        setState(() {
+          _data[aID] = aItem.item1;
+        });
+      },
+      items: aItems.map<DropdownMenuItem>((Tuple2<int, String> aElement) {
+        return DropdownMenuItem(value: aElement, child: Text(aElement.item2));
+      }),
+    );
+  }
 
   GlobalKey<FormState> _formState = GlobalKey<FormState>();
   Map<String, dynamic> _data;
 
-  final TextStyle _nameStyle = TextStyle(fontSize: 48);
-  final TextStyle _nameEditStyle = TextStyle(fontSize: 36);
+  final TextStyle _editStyle = TextStyle(fontSize: 36);
   final TextStyle _descStyle = TextStyle(fontSize: 48);
-  final TextStyle _descEditStyle = TextStyle(fontSize: 36);
-  final TextStyle _costStyle = TextStyle(fontSize: 48);
-  final TextStyle _costEditStyle = TextStyle(fontSize: 36);
 }
 
 class EditExpenseDialog extends StatefulWidget {

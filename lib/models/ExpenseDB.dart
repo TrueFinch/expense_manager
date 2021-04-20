@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tuple/tuple.dart';
 
 class ExpenseDB {
   static final ExpenseDB _instance = ExpenseDB._internal();
@@ -45,6 +46,8 @@ class ExpenseDB {
     queryRes.forEach((aElement) => result.add(ExpenseModel.fromMap(aElement)));
     return result;
   }
+  //
+  // Future<Tuple2<int, String>> getAllTags
 
   Future<String> getTagByID(int aID) async {
     Database db = await database;
@@ -108,41 +111,4 @@ class ExpenseDB {
       // @formatter:on
     ]);
   }
-// get count => _rows.length;
-//
-//
-// initialize() async {
-//   var folder = await getApplicationDocumentsDirectory();
-//   var path = join(folder.path, _dbName);
-//   return await openDatabase(path, version: 1, onCreate: (db, version) async {
-//     String initScript = await rootBundle.loadString(_initScriptPath);
-//     List<String> scripts = initScript.split(";");
-//     scripts.forEach((element) {
-//       if (element.isNotEmpty) {
-//         db.execute(element.trim());
-//       }
-//     });
-//   });
-// }
-//
-// Future updateDB() async {
-//   _rows = await _getAllExpenses();
-// }
-//
-
-//
-// ExpenseModel getExpenseByIndex(int aIndex) {
-//   return _rows.elementAt(aIndex);
-// }
-//
-// // Future<void> addExpense(int aCost, String aName, { String aDesc = "", int aTag, int aOwner} )
-//
-// List<ExpenseModel> get allExpenses => _rows;
-//
-
-//
-// Database _database;
-// List<ExpenseModel> _rows = [];
-//
-
 }
