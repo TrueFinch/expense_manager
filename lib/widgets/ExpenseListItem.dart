@@ -35,7 +35,7 @@ class ExpenseListItem extends StatelessWidget {
                   style: _nameStyle,
                 ),
                 Text(
-                  DateFormat("dd-MM-yyyy — HH:mm").format(data.dateTime),
+                  DateFormat("dd-MM-yyyy HH:mm").format(data.dateTime),
                   style: _dateStyle,
                 )
               ],

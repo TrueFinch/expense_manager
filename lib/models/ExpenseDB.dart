@@ -46,20 +46,24 @@ class ExpenseDB {
     queryRes.forEach((aElement) => result.add(ExpenseModel.fromMap(aElement)));
     return result;
   }
-  //
-  // Future<Tuple2<int, String>> getAllTags
+
+  // Future<Tuple2<int, String>> getAllTagsByID(int aExpenseID) async {
+  //   Database db = await database;
+  //   List<Map> queryRes =
+  //     await db.query("Tags", where: "id = ?", whereArgs: [aID]);
+  // }
 
   Future<String> getTagByID(int aID) async {
     Database db = await database;
     List<Map> queryRes =
-    await db.query("Tags", where: "id = ?", whereArgs: [aID]);
+        await db.query("Tags", where: "id = ?", whereArgs: [aID]);
     return queryRes.isEmpty ? "" : queryRes.first["name"];
   }
 
   Future<String> getOwnerByID(int aID) async {
     Database db = await database;
     List<Map> queryRes =
-    await db.query("Owners", where: "id = ?", whereArgs: [aID]);
+        await db.query("Owners", where: "id = ?", whereArgs: [aID]);
     return queryRes.isEmpty ? "" : queryRes.first["name"];
   }
 
@@ -71,34 +75,33 @@ class ExpenseDB {
     await updateDB();
   }
 
-  List<ExpenseModel> _rows = [];
-
-  int get count => _rows.length;
+  List<ExpenseModel> _expenses = [];
+  int get count => _expenses.length;
 
   ExpenseModel get(int index) {
-    return _rows[index];
+    return _expenses[index];
   }
 
   ExpenseModel getExpenseByID(int aID) {
-    return _rows.firstWhere((element) => element.id == aID, orElse: () {
+    return _expenses.firstWhere((element) => element.id == aID, orElse: () {
       return null;
     });
   }
 
   Future updateDB() async {
-    _rows = await _getAllExpenses();
+    _expenses = await _getAllExpenses();
     populate();
   }
 
   void removeAt(int index) {
-    _rows.removeAt(index);
+    _expenses.removeAt(index);
   }
 
   final String _dbName = "expenseDB.db";
   final String _initScriptPath = "assets/db/init_script.sql";
 
   populate() {
-    _rows.addAll([
+    _expenses.addAll([
       // @formatter:off
       ExpenseModel(0, 100, "expense0", "", 0, 0, DateTime.now().add(Duration(hours: 1))),
       ExpenseModel(1, 100, "expense1", "", 0, 0, DateTime.now()),
