@@ -41,9 +41,10 @@ class ExpenseDB {
 
   Future<List<ExpenseModel>> _getAllExpenses() async {
     Database db = await database;
-    List<Map> queryRes = await db.query("Expenses", orderBy: "dateTime DESC");
+    List<Map> queryRes = await db.query("Expenses");
     List<ExpenseModel> result = [];
     queryRes.forEach((aElement) => result.add(ExpenseModel.fromMap(aElement)));
+    result.sort((a, b) => a.dateTime.compareTo(b.dateTime));
     return result;
   }
 
