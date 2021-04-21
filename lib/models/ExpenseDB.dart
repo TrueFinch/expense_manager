@@ -90,7 +90,7 @@ class ExpenseDB {
 
   Future updateDB() async {
     _expenses = await _getAllExpenses();
-    populate();
+    // populate();
   }
 
   void removeAt(int index) {
@@ -103,14 +103,14 @@ class ExpenseDB {
   populate() {
     _expenses.addAll([
       // @formatter:off
-      ExpenseModel(0, 100, "expense0", "", 0, 0, DateTime.now().add(Duration(hours: 1))),
-      ExpenseModel(1, 100, "expense1", "", 0, 0, DateTime.now()),
-      ExpenseModel(2, 100, "expense2", "", 0, 0, DateTime.now()),
-      ExpenseModel(3, 100, "expense3", "", 0, 0, DateTime.now()),
-      ExpenseModel(4, 100, "expense4", "", 0, 0, DateTime.now()),
-      ExpenseModel(5, 100, "expense5", "", 0, 0, DateTime.now()),
-      ExpenseModel(6, 100, "expense6", "", 0, 0, DateTime.now()),
-      ExpenseModel(7, 100, "expense7", "", 0, 0, DateTime.now()),
+      ExpenseModel(0, 100, "expense0", "", 0, DateTime.now().add(Duration(hours: 1))),
+      ExpenseModel(1, 100, "expense1", "", 0, DateTime.now()),
+      ExpenseModel(2, 100, "expense2", "", 0, DateTime.now()),
+      ExpenseModel(3, 100, "expense3", "", 0, DateTime.now()),
+      ExpenseModel(4, 100, "expense4", "", 0, DateTime.now()),
+      ExpenseModel(5, 100, "expense5", "", 0, DateTime.now()),
+      ExpenseModel(6, 100, "expense6", "", 0, DateTime.now()),
+      ExpenseModel(7, 100, "expense7", "", 0, DateTime.now()),
       // @formatter:on
     ]);
   }

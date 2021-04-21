@@ -7,8 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:tuple/tuple.dart';
 
 class EditExpenseDialogState extends State<EditExpenseDialog> {
-  EditExpenseDialog() {}
-
   @override
   Widget build(BuildContext aContext) {
     var currentDateTime =
@@ -16,74 +14,106 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
     return Scaffold(
       appBar: AppBar(title: Text("Edit expense")),
       body: Form(
-          key: _formState,
-          child: Column(
-            children: [
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Name of the expense",
-                  labelText: "Name of the expense",
-                ),
-                style: _editStyle,
-                onSaved: (aValue) {
-                  widget._data["name"] = aValue;
-                },
+        key: _formState,
+        child: Column(
+          children: [
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: "Name",
+                labelText: "Name",
               ),
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Description",
-                  labelText: "Description",
-                ),
-                style: _editStyle,
-                keyboardType: TextInputType.multiline,
-                minLines: 1,
-                maxLines: 3,
-                onSaved: (aValue) {
-                  widget._data["desc"] = aValue;
-                },
+              validator: (aValue) {
+                if (aValue.isEmpty) {
+                  return "Name is emprty";
+                }
+                return null;
+              },
+              style: _editStyle,
+              onSaved: (aValue) {
+                widget._data["name"] = aValue;
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: "Description",
+                labelText: "Description",
               ),
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Cost",
-                  labelText: "Cost",
-                ),
-                style: _editStyle,
-                keyboardType: TextInputType.numberWithOptions(
-                    signed: true, decimal: false),
-                onSaved: (aValue) {
-                  widget._data["cost"] = aValue;
-                },
+              style: _editStyle,
+              keyboardType: TextInputType.multiline,
+              minLines: 1,
+              maxLines: 3,
+              onSaved: (aValue) {
+                widget._data["desc"] = aValue;
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: "Cost",
+                labelText: "Cost",
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Date and time", style: _descStyle),
-                  TextButton(
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(
-                        aContext,
-                        showTitleActions: true,
-                        onConfirm: (DateTime aValue) {
-                          setState(() {
-                            widget._data["dateTime"] =
-                                DateFormat("dd-MM-yyyy HH:mm").format(aValue);
-                          });
-                        },
-                        currentTime: currentDateTime,
-                        locale: LocaleType.ru,
-                      );
-                    },
-                    child: Text(
-                      widget._data["dateTime"],
-                      style: _dateTimeStyle,
-                    ),
+              style: _editStyle,
+              keyboardType:
+                  TextInputType.numberWithOptions(signed: true, decimal: false),
+              onSaved: (aValue) {
+                var doubleValue = double.tryParse(aValue);
+                if (doubleValue != null) {
+                  widget._data["cost"] = doubleValue;
+                }
+              },
+              validator: (aValue) {
+                var doubleValue = double.tryParse(aValue);
+                if (doubleValue == null) {
+                  return "Cost is empty";
+                }
+                return null;
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Date and time", style: _descStyle),
+                TextButton(
+                  onPressed: () {
+                    DatePicker.showDateTimePicker(
+                      aContext,
+                      showTitleActions: true,
+                      onConfirm: (DateTime aValue) {
+                        setState(() {
+                          widget._data["dateTime"] =
+                              DateFormat("dd-MM-yyyy HH:mm").format(aValue);
+                        });
+                      },
+                      currentTime: currentDateTime,
+                      locale: LocaleType.ru,
+                    );
+                  },
+                  child: Text(
+                    widget._data["dateTime"],
+                    style: _dateTimeStyle,
                   ),
-                ],
-              ),
-              // Text("Tag", style: _descStyle),
-              // _buildDropDown(aContext, Icon(Icons.tag), aItems, "Tag")
-            ],
-          )),
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formState.currentState.validate()) {
+                      _formState.currentState.save();
+                      ExpenseDB()
+                          .addExpense(ExpenseModel.fromMap(widget._data))
+                          .then((value) => Navigator.pop(aContext));
+                    }
+                  },
+                  child: Text("Submit"),
+                )
+              ],
+            )
+            // Text("Tag", style: _descStyle),
+            // _buildDropDown(aContext, Icon(Icons.tag), aItems, "Tag")
+          ],
+        ),
+      ),
     );
   }
 
@@ -120,7 +150,7 @@ class EditExpenseDialog extends StatefulWidget {
         "name": "",
         "tag": 0,
         "owner": 0,
-        "cost": 0,
+        "cost": null,
       };
     } else {
       var oldModel = ExpenseDB().getExpenseByID(aExpenseID);

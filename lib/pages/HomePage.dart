@@ -1,5 +1,5 @@
+import 'package:expense_manager/dialogs/EditExpenseDialog.dart';
 import 'package:expense_manager/models/ExpenseDB.dart';
-import 'file:///C:/projects/university/expense_manager/lib/dialogs/EditExpenseDialog.dart';
 import 'package:expense_manager/widgets/ExpenseListItem.dart';
 import 'package:flutter/material.dart';
 
@@ -30,8 +30,7 @@ class _HomePageState extends State<HomePage> {
             var element = _db.get(aIndex);
             return ExpenseListItem(index: aIndex, data: element);
           },
-          separatorBuilder: (context, index) =>
-              Divider(
+          separatorBuilder: (context, index) => Divider(
                 thickness: 1,
               ),
           itemCount: _db.count),
@@ -41,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return EditExpenseDialog();
-          }));
+          })).then((value) => setState(() {}));
         },
       ),
     );

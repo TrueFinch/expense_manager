@@ -4,11 +4,9 @@ CREATE TABLE "Expenses" (
 	"dateTime"	TEXT NOT NULL,
 	"desc"	    TEXT,
 	"name"	    TEXT,
-	"tag"	    INTEGER DEFAULT 0,
 	"owner"	    INTEGER DEFAULT 0,
 	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("owner") REFERENCES "owners"("id") ON UPDATE SET DEFAULT ON DELETE SET DEFAULT,
-	FOREIGN KEY("tag") REFERENCES "tags"("id") ON UPDATE SET DEFAULT ON DELETE SET DEFAULT
+	FOREIGN KEY("owner") REFERENCES "owners"("id") ON UPDATE SET DEFAULT ON DELETE SET DEFAULT
 );
 
 CREATE TABLE "Owners" (
@@ -24,6 +22,13 @@ CREATE TABLE "Tags" (
 	"id"	INTEGER NOT NULL,
 	"name"	TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
+);
+
+CREATE TABLE "ExpenseToTag" (
+	"expenseID"	INTEGER NOT NULL,
+	"tagID"	INTEGER NOT NULL,
+	PRIMARY KEY("expenseID", "tagID"),
+	UNIQUE("expenseID", "tagID")
 );
 
 INSERT INTO "Tags" ("id", "name")
