@@ -44,8 +44,12 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Total expenses: " + _expensesCount.toString()),
-                    Text("Total cost: " + _expensesSum.toString()),
+                    Text(
+                      "Total expenses: " + _expensesCount.toStringAsFixed(2),
+                    ),
+                    Text(
+                      "Total cost: " + _expensesSum.toStringAsFixed(2),
+                    ),
                   ],
                 ),
               ),
@@ -54,7 +58,11 @@ class _HomePageState extends State<HomePage> {
               child: ListView.separated(
                 itemBuilder: (aContext, aIndex) {
                   var element = _db.get(aIndex);
-                  return ExpenseListItem(index: aIndex, data: element, notifyParent: notify,);
+                  return ExpenseListItem(
+                    index: aIndex,
+                    data: element,
+                    notifyParent: notify,
+                  );
                 },
                 separatorBuilder: (context, index) => Divider(
                   thickness: 1,
