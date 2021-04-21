@@ -18,6 +18,7 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
         child: Column(
           children: [
             TextFormField(
+              initialValue: widget._data["name"],
               decoration: InputDecoration(
                 hintText: "Name",
                 labelText: "Name",
@@ -34,6 +35,7 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
               },
             ),
             TextFormField(
+              initialValue: widget._data["desc"],
               decoration: InputDecoration(
                 hintText: "Description",
                 labelText: "Description",
@@ -47,6 +49,7 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
               },
             ),
             TextFormField(
+              initialValue: widget._data["cost"].toString(),
               decoration: InputDecoration(
                 hintText: "Cost",
                 labelText: "Cost",
@@ -101,9 +104,16 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
                   onPressed: () {
                     if (_formState.currentState.validate()) {
                       _formState.currentState.save();
-                      ExpenseDB()
-                          .addExpense(ExpenseModel.fromMap(widget._data))
-                          .then((value) => Navigator.pop(aContext));
+                      if (widget._data["id"] == -1) {
+                        ExpenseDB()
+                            .addExpense(ExpenseModel.fromMap(widget._data))
+                            .then((value) => Navigator.pop(aContext));
+                      } else {
+                        ExpenseDB()
+                            .updateExpenseByID(widget._data["id"],
+                                ExpenseModel.fromMap(widget._data))
+                            .then((value) => Navigator.pop(aContext));
+                      }
                     }
                   },
                   child: Text("Submit"),
@@ -149,7 +159,6 @@ class EditExpenseDialog extends StatefulWidget {
         "dateTime": DateFormat("dd-MM-yyyy HH:mm").format(DateTime.now()),
         "desc": "",
         "name": "",
-        "tag": 0,
         "owner": 0,
         "cost": null,
       };

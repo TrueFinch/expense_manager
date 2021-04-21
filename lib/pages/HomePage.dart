@@ -19,6 +19,10 @@ class _HomePageState extends State<HomePage> {
     _db.updateDB().then((value) => setState(() {}));
   }
 
+  void notify() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     int _expensesCount = _db.count;
@@ -50,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               child: ListView.separated(
                 itemBuilder: (aContext, aIndex) {
                   var element = _db.get(aIndex);
-                  return ExpenseListItem(index: aIndex, data: element);
+                  return ExpenseListItem(index: aIndex, data: element, notifyParent: notify,);
                 },
                 separatorBuilder: (context, index) => Divider(
                   thickness: 1,

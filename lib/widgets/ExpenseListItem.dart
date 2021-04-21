@@ -1,3 +1,4 @@
+import 'package:expense_manager/dialogs/EditExpenseDialog.dart';
 import 'package:expense_manager/models/ExpenseDB.dart';
 import 'package:expense_manager/models/ExpenseModel.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ExpenseListItem extends StatelessWidget {
-  ExpenseListItem({this.index, this.data});
+  final Function() notifyParent;
+
+  ExpenseListItem({this.index, this.data, @required this.notifyParent});
 
   final int index;
   final ExpenseModel data;
@@ -26,46 +29,73 @@ class ExpenseListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-            flex: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  data.name,
-                  style: _nameStyle,
-                ),
-                Text(
-                  DateFormat("dd-MM-yyyy HH:mm").format(data.dateTime),
-                  style: _dateStyle,
-                )
-              ],
-            )),
+          flex: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data.name,
+                style: _nameStyle,
+              ),
+              Text(
+                DateFormat("dd-MM-yyyy HH:mm").format(data.dateTime),
+                style: _dateStyle,
+              )
+            ],
+          ),
+        ),
         // if (data.owner != 0 || data.tag != 0) Expanded(child: Column()),
         Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  data.cost.toString(),
-                  style: _costStyle,
-                )
-              ],
-            )),
+          flex: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                data.cost.toString(),
+                style: _costStyle,
+              )
+            ],
+          ),
+        ),
       ],
     );
-    return Dismissible(
-      key: Key("${data.id}"),
-      onDismissed: (direction) {
+    return GestureDetector(
+      onLongPress: () async {
+        await showDialog(
+          context: aContext,
+          builder: (BuildContext aContext) {
+            return SimpleDialog(
+              title: const Text("Options"),
+              children: [
+                SimpleDialogOption(
+                  child: const Text("Edit"),
+                  onPressed: () {
+                    Navigator.push(
+                      aContext,
+                      MaterialPageRoute(builder: (context) {
+                        return EditExpenseDialog(
+                          aExpenseID: data.id,
+                        );
+                      }),
+                    ).then((value) => Navigator.pop(aContext)).then((value) => notifyParent());
+                  },
+                ),
+                SimpleDialogOption(
+                  child: const Text("Delete"),
+                  onPressed: () {
+                    ExpenseDB()
+                        .deleteExpenseByID(data.id)
+                        .then((value) => Navigator.pop(aContext)).then((value) => notifyParent());
+                  },
+                ),
+              ],
+            );
+          },
+        );
       },
-      child: GestureDetector(
-        onLongPress: () {
-          int a = 0;
-        },
-        child: Card(
-          child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5), child: content),
-        ),
+      child: Card(
+        child:
+            Padding(padding: EdgeInsets.fromLTRB(10, 5, 10, 5), child: content),
       ),
     );
   }

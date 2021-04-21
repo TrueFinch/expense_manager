@@ -56,19 +56,18 @@ class ExpenseDB {
   Future<String> getTagByID(int aID) async {
     Database db = await database;
     List<Map> queryRes =
-    await db.query("Tags", where: "id = ?", whereArgs: [aID]);
+        await db.query("Tags", where: "id = ?", whereArgs: [aID]);
     return queryRes.isEmpty ? "" : queryRes.first["name"];
   }
 
   Future<String> getOwnerByID(int aID) async {
     Database db = await database;
     List<Map> queryRes =
-    await db.query("Owners", where: "id = ?", whereArgs: [aID]);
+        await db.query("Owners", where: "id = ?", whereArgs: [aID]);
     return queryRes.isEmpty ? "" : queryRes.first["name"];
   }
 
   Future<void> addExpense(ExpenseModel data) async {
-    var dateTime = DateTime.now();
     Database db = await database;
     await db.insert("Expenses", data.toMapWithoutID(),
         conflictAlgorithm: ConflictAlgorithm.replace);
@@ -102,6 +101,20 @@ class ExpenseDB {
     return res;
   }
 
+  Future<void> deleteExpenseByID(int aID) async {
+    Database db = await database;
+    await db.delete("Expenses", where: "id = ?", whereArgs: [aID]);
+    await updateDB();
+  }
+
+  Future<void> updateExpenseByID(int aID, ExpenseModel aData) async {
+    Database db = await database;
+    await db.update("Expenses", aData.toMapWithoutID(),
+        where: "id = ?", whereArgs: [aID]);
+    await updateDB();
+  }
+
+  @deprecated
   void removeAt(int index) {
     _expenses.removeAt(index);
   }
