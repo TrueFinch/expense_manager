@@ -2,6 +2,7 @@ import 'package:expense_manager/models/ExpenseDB.dart';
 import 'package:expense_manager/models/ExpenseModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:tuple/tuple.dart';
@@ -19,6 +20,9 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
           children: [
             TextFormField(
               initialValue: widget._data["name"],
+              inputFormatters: [
+                FilteringTextInputFormatter.singleLineFormatter
+              ],
               decoration: InputDecoration(
                 hintText: "Name",
                 labelText: "Name",
@@ -49,7 +53,9 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
               },
             ),
             TextFormField(
-              initialValue: widget._data["cost"] != null ? toString() : "0.0",
+              initialValue: widget._data["cost"] != null
+                  ? widget._data["cost"].toString()
+                  : "",
               decoration: InputDecoration(
                 hintText: "Cost",
                 labelText: "Cost",
@@ -57,6 +63,9 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
               style: _editStyle,
               keyboardType:
                   TextInputType.numberWithOptions(signed: true, decimal: false),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp('[0-9.,-]+'))
+              ],
               onSaved: (aValue) {
                 var doubleValue = double.tryParse(aValue);
                 if (doubleValue != null) {
