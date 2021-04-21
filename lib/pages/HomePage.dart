@@ -21,19 +21,46 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    int _expensesCount = _db.count;
+    double _expensesSum = _db.getTotalCost();
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView.separated(
-          itemBuilder: (aContext, aIndex) {
-            var element = _db.get(aIndex);
-            return ExpenseListItem(index: aIndex, data: element);
-          },
-          separatorBuilder: (context, index) => Divider(
-                thickness: 1,
+      body: Container(
+        height: size.height,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Card(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Total expenses: " + _expensesCount.toString()),
+                    Text("Total cost: " + _expensesSum.toString()),
+                  ],
+                ),
               ),
-          itemCount: _db.count),
+            ),
+            Expanded(
+              child: ListView.separated(
+                itemBuilder: (aContext, aIndex) {
+                  var element = _db.get(aIndex);
+                  return ExpenseListItem(index: aIndex, data: element);
+                },
+                separatorBuilder: (context, index) => Divider(
+                  thickness: 1,
+                ),
+                itemCount: _db.count,
+              ),
+            ),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Increment',
         child: Icon(Icons.add),

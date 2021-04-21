@@ -56,14 +56,14 @@ class ExpenseDB {
   Future<String> getTagByID(int aID) async {
     Database db = await database;
     List<Map> queryRes =
-        await db.query("Tags", where: "id = ?", whereArgs: [aID]);
+    await db.query("Tags", where: "id = ?", whereArgs: [aID]);
     return queryRes.isEmpty ? "" : queryRes.first["name"];
   }
 
   Future<String> getOwnerByID(int aID) async {
     Database db = await database;
     List<Map> queryRes =
-        await db.query("Owners", where: "id = ?", whereArgs: [aID]);
+    await db.query("Owners", where: "id = ?", whereArgs: [aID]);
     return queryRes.isEmpty ? "" : queryRes.first["name"];
   }
 
@@ -76,6 +76,7 @@ class ExpenseDB {
   }
 
   List<ExpenseModel> _expenses = [];
+
   int get count => _expenses.length;
 
   ExpenseModel get(int index) {
@@ -91,6 +92,14 @@ class ExpenseDB {
   Future updateDB() async {
     _expenses = await _getAllExpenses();
     // populate();
+  }
+
+  double getTotalCost() {
+    double res = 0;
+    _expenses.forEach((aElement) {
+      res += aElement.cost;
+    });
+    return res;
   }
 
   void removeAt(int index) {

@@ -95,6 +95,7 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
               ],
             ),
             Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
                   onPressed: () {
