@@ -77,15 +77,49 @@ class ExpenseListItem extends StatelessWidget {
                           aExpenseID: data.id,
                         );
                       }),
-                    ).then((value) => Navigator.pop(aContext)).then((value) => notifyParent());
+                    )
+                        .then((value) => Navigator.pop(aContext))
+                        .then((value) => notifyParent());
                   },
                 ),
                 SimpleDialogOption(
                   child: const Text("Delete"),
-                  onPressed: () {
-                    ExpenseDB()
-                        .deleteExpenseByID(data.id)
-                        .then((value) => Navigator.pop(aContext)).then((value) => notifyParent());
+                  onPressed: () async {
+                    await showDialog(
+                      context: aContext,
+                      barrierDismissible: false,
+                      builder: (BuildContext aContext) {
+                        return AlertDialog(
+                          title: const Text("Are you sure?"),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const Text(
+                                    "This action will delete the expense permanently")
+                              ],
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                ExpenseDB()
+                                    .deleteExpenseByID(data.id)
+                                    .then((value) => Navigator.pop(aContext));
+                              },
+                              child: const Text("Confirm"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(aContext);
+                              },
+                              child: const Text("Cancel"),
+                            ),
+                          ],
+                        );
+                      },
+                    )
+                        .then((value) => Navigator.pop(aContext))
+                        .then((value) => notifyParent());
                   },
                 ),
               ],

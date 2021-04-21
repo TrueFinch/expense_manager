@@ -16,7 +16,7 @@ class ExpenseManagerApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(title: 'Awesome expense manager!'),
     );
   }
 }

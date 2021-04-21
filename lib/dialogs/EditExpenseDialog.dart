@@ -49,7 +49,7 @@ class EditExpenseDialogState extends State<EditExpenseDialog> {
               },
             ),
             TextFormField(
-              initialValue: widget._data["cost"].toString(),
+              initialValue: widget._data["cost"] != null ? toString() : "0.0",
               decoration: InputDecoration(
                 hintText: "Cost",
                 labelText: "Cost",
